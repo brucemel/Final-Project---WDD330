@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/header', { currentPage: 'favorites' }) %>
+  <main class="favorites-main">
+    <div class="favorites-header">
+      <div>
+        <h1 class="favorites-title">Your Favorites</h1>
+        <p class="favorites-subtitle">Quotes you've saved for inspiration</p>
+      </div>
+      <button class="btn btn-danger" id="clearAllBtn" aria-label="Clear all favorites">
+        Clear All
+      </button>
+    </div>
+    <div class="empty-state" id="emptyState" hidden>
+      <div class="empty-icon">♡</div>
+      <h2>No favorites yet</h2>
+      <p>Head back to the home page and save some quotes you love!</p>
+      <a href="/" class="btn btn-new">Go to Home</a>
+    </div>
+    <div class="favorites-grid" id="favoritesGrid" aria-label="Saved favorite quotes"></div>
+  </main>
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+  <%- include('partials/footer') %>
+  <script type="module" src="/js/favorites.js"></script>
+</body>
+</html>
