@@ -4,21 +4,27 @@ import {
 } from './modules/storage.js';
 import { renderFavoritesGrid, applyTheme, showToast } from './modules/ui.js';
 
-/* Week 6: Build favorites gallery page */
-/*
 function init() {
   applyTheme(getTheme());
   renderList();
   bindEvents();
 }
 
-function renderList() {
-  renderFavoritesGrid(getFavorites(), handleRemove);
+function renderList(filter = '') {
+  const favorites = getFavorites();
+  const filtered = filter
+    ? favorites.filter(fav =>
+        fav.quote.toLowerCase().includes(filter) ||
+        fav.author.toLowerCase().includes(filter)
+      )
+    : favorites;
+  renderFavoritesGrid(filtered, handleRemove);
 }
 
 function handleRemove(favId) {
   removeFavorite(favId);
-  renderList();
+  const input = document.getElementById('favSearchInput');
+  renderList(input?.value.trim().toLowerCase() || '');
   showToast('Removed from favorites');
 }
 
@@ -30,7 +36,10 @@ function bindEvents() {
     showToast('All favorites cleared');
   });
 
-  // Week 6: Dark/light theme toggle
+  document.getElementById('favSearchInput')?.addEventListener('input', (e) => {
+    renderList(e.target.value.trim().toLowerCase());
+  });
+
   document.getElementById('themeToggle')?.addEventListener('click', () => {
     const next = getTheme() === 'dark' ? 'light' : 'dark';
     saveTheme(next);
@@ -39,4 +48,3 @@ function bindEvents() {
 }
 
 init();
-*/

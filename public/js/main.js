@@ -1,4 +1,4 @@
-import { getRandomQuote, searchQuotes } from './modules/quotable.js';
+import { getRandomQuote } from './modules/quotable.js';
 import { getRandomPhoto } from './modules/unsplash.js';
 import {
   getFavorites, saveFavorite, removeFavorite, isFavorite,
@@ -18,23 +18,20 @@ let historyIndex = -1;
 
 // ── Init ────────────────────────────────────────────────
 async function init() {
-  /* Week 6: Dark/light theme toggle */
-  // applyTheme(getTheme());
-  /* Week 6: Quote history navigation */
-  // syncHistoryIndex();
+  applyTheme(getTheme());
+  syncHistoryIndex();
   bindEvents();
   await loadNewQuote();
   await loadNewImage();
 }
 
 // ── Data Loading ────────────────────────────────────────
-async function loadNewQuote(tag = 'inspirational') {
+async function loadNewQuote() {
   showQuoteSkeleton();
-  const quote = await getRandomQuote(tag);
+  const quote = await getRandomQuote();
   currentQuote = quote;
   addToHistory(quote);
-  /* Week 6: Quote history navigation */
-  // syncHistoryIndex();
+  syncHistoryIndex();
   displayQuote(quote);
   updateFavoriteButton(isFavorite(quote._id));
 }
@@ -48,8 +45,6 @@ async function loadNewImage() {
   }
 }
 
-/* Week 6: Quote history navigation */
-/*
 function showHistoryQuote(index) {
   const history = getHistory();
   if (index < 0 || index >= history.length) return;
@@ -65,7 +60,6 @@ function syncHistoryIndex() {
   historyIndex = history.length - 1;
   updateHistoryNav(historyIndex, history.length);
 }
-*/
 
 // ── Event Binding ───────────────────────────────────────
 function bindEvents() {
@@ -88,8 +82,6 @@ function bindEvents() {
     }
   });
 
-  /* Week 6: Share and copy-to-clipboard */
-  /*
   document.getElementById('copyBtn')?.addEventListener('click', async () => {
     if (!currentQuote) return;
     const text = `"${currentQuote.content}" — ${currentQuote.author}`;
@@ -112,66 +104,19 @@ function bindEvents() {
     const text = encodeURIComponent(`"${currentQuote.content}" — ${currentQuote.author}`);
     window.open(`https://www.facebook.com/sharer/sharer.php?quote=${text}`, '_blank');
   });
-  */
 
-  /* Week 6: Quote history navigation */
-  /*
   document.getElementById('prevBtn')?.addEventListener('click', () => {
     showHistoryQuote(historyIndex - 1);
   });
   document.getElementById('nextBtn')?.addEventListener('click', () => {
     showHistoryQuote(historyIndex + 1);
   });
-  */
 
-  /* Week 6: Dark/light theme toggle */
-  /*
   document.getElementById('themeToggle')?.addEventListener('click', () => {
     const next = getTheme() === 'dark' ? 'light' : 'dark';
     saveTheme(next);
     applyTheme(next);
   });
-  */
-
-  /* Week 6: Search and category filter */
-  /*
-  const searchBtn = document.getElementById('searchBtn');
-  const searchInput = document.getElementById('searchInput');
-  searchBtn?.addEventListener('click', handleSearch);
-  searchInput?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') handleSearch();
-  });
-
-  document.querySelectorAll('.category-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      loadNewQuote(btn.dataset.tag);
-    });
-  });
-  */
 }
-
-/* Week 6: Search and category filter */
-/*
-async function handleSearch() {
-  const input = document.getElementById('searchInput');
-  const query = input?.value.trim();
-  if (!query) return;
-
-  showQuoteSkeleton();
-  const results = await searchQuotes(query);
-  if (results.length > 0) {
-    currentQuote = results[0];
-    addToHistory(currentQuote);
-    syncHistoryIndex();
-    displayQuote(currentQuote);
-    updateFavoriteButton(isFavorite(currentQuote._id));
-  } else {
-    showToast('No quotes found for that search');
-    await loadNewQuote();
-  }
-}
-*/
 
 init();
