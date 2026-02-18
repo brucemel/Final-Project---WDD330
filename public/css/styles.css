@@ -476,6 +476,105 @@ button {
   border-color: var(--color-accent);
 }
 
+/* ── Music Player ────────────────────────────── */
+
+.music-player {
+  position: fixed;
+  bottom: 3rem;
+  right: 1rem;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #1e1e1e;
+  border: 2px solid var(--color-accent);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  max-width: 300px;
+  box-shadow: 3px 3px 0px var(--color-accent);
+}
+
+.music-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.music-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.music-artist {
+  font-size: 0.63rem;
+  color: #aaa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.music-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.music-btn {
+  background: #333;
+  border: 1px solid #555;
+  color: #ccc;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.35rem;
+  border-radius: 4px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.music-btn:hover {
+  background: #444;
+  color: #fff;
+}
+
+.music-btn-play {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+  padding: 0.25rem 0.45rem;
+  font-size: 0.7rem;
+}
+
+.music-btn-play:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  color: #fff;
+}
+
+.music-volume {
+  width: 55px;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .music-player {
+    bottom: 3.5rem;
+    right: 0;
+    left: 0;
+    max-width: none;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+  }
+}
+
 /* ── Toast ───────────────────────────────────── */
 
 .toast {
@@ -640,12 +739,29 @@ button {
 /* ── Footer ──────────────────────────────────── */
 
 .site-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 88;
   text-align: center;
-  padding: 1.25rem 1rem;
-  font-size: 0.75rem;
+  padding: 0.4rem 1rem;
+  font-size: 0.7rem;
   color: var(--color-muted);
+  background: var(--color-surface);
   border-top: 1px solid var(--color-border);
-  margin-top: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+  .site-footer {
+    font-size: 0.58rem;
+    padding: 0.4rem 0.5rem;
+    white-space: normal;
+    text-align: center;
+  }
 }
 
 .site-footer a {

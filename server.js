@@ -95,6 +95,34 @@ app.get('/api/photo', async (req, res) => {
   }
 });
 
+app.get('/api/music', async (req, res) => {
+  try {
+    const moods = [
+      'inspirational instrumental', 'uplifting background music',
+      'motivational piano', 'positive energy instrumental',
+      'epic inspirational', 'cinematic uplifting'
+    ];
+    const query = req.query.mood || moods[Math.floor(Math.random() * moods.length)];
+    const url = `https://api.deezer.com/search?q=${encodeURIComponent(query)}&limit=20`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Deezer error: ${response.status}`);
+    const data = await response.json();
+    const tracks = (data.data || [])
+      .filter(t => t.preview)
+      .map(t => ({
+        id:       t.id,
+        title:    t.title,
+        artist:   t.artist?.name || 'Unknown',
+        preview:  t.preview,
+        cover:    t.album?.cover_small || ''
+      }));
+    res.json({ tracks });
+  } catch (error) {
+    console.error('Music fetch error:', error.message);
+    res.status(500).json({ error: 'Failed to fetch music' });
+  }
+});
+
 app.use((req, res) => {
   res.status(404).render('index', { title: 'Daily Inspiration Board' });
 });

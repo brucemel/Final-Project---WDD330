@@ -28,6 +28,21 @@
     </div>
     <div class="favorites-grid" id="favoritesGrid" aria-label="Saved favorite quotes"></div>
   </main>
+  <!-- Music Player -->
+  <div class="music-player" id="musicPlayer" aria-label="Background music player">
+    <div class="music-info">
+      <span class="music-title" id="musicTitle">Loading music...</span>
+      <span class="music-artist" id="musicArtist"></span>
+    </div>
+    <div class="music-controls">
+      <button class="music-btn" id="musicPrevBtn" aria-label="Previous track">&#9664;&#9664;</button>
+      <button class="music-btn music-btn-play" id="musicPlayBtn" aria-label="Play music">&#9654;</button>
+      <button class="music-btn" id="musicNextBtn" aria-label="Next track">&#9654;&#9654;</button>
+    </div>
+    <input type="range" class="music-volume" id="musicVolume"
+      min="0" max="1" step="0.05" aria-label="Volume">
+  </div>
+
   <div class="toast" id="toast" role="alert" aria-live="polite"></div>
   <%- include('partials/footer') %>
   <script type="module" src="/js/favorites.js"></script>

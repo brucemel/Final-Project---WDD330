@@ -1,10 +1,19 @@
 /**
  * ui.js
- * Module for all DOM manipulation and UI rendering
+ * Module for all DOM manipulation and UI rendering.
+ * This module is responsible for everything the user sees:
+ * quotes, background images, theme, favorite button, history nav,
+ * toast notifications, and the favorites grid.
  */
 
 // ── QUOTE ──────────────────────────────────────────────
 
+/**
+ * Displays a quote object in the hero section.
+ * Hides the skeleton loader and shows the quote content.
+ * Adds a CSS animation class (fadeUp) each time to re-trigger the entrance effect.
+ * Also renders up to 3 topic tags below the author name.
+ */
 export function displayQuote(quote) {
   const skeleton = document.getElementById('quoteSkeleton');
   const content  = document.getElementById('quoteContent');
@@ -17,6 +26,7 @@ export function displayQuote(quote) {
   if (skeleton) skeleton.hidden = true;
   if (content) {
     content.hidden = false;
+    // Force reflow to restart the animation on every new quote
     content.classList.remove('animating');
     void content.offsetWidth;
     content.classList.add('animating');
@@ -25,6 +35,7 @@ export function displayQuote(quote) {
   textEl.textContent   = `"${quote.content}"`;
   authorEl.textContent = `— ${quote.author}`;
 
+  // Display up to 3 tag chips below the author
   if (tagsEl) {
     tagsEl.innerHTML = quote.tags
       .slice(0, 3)
@@ -33,6 +44,10 @@ export function displayQuote(quote) {
   }
 }
 
+/**
+ * Shows the skeleton loader placeholder while a new quote is being fetched.
+ * Hides the actual quote content until the data arrives.
+ */
 export function showQuoteSkeleton() {
   const skeleton = document.getElementById('quoteSkeleton');
   const content  = document.getElementById('quoteContent');
@@ -42,12 +57,18 @@ export function showQuoteSkeleton() {
 
 // ── IMAGE ──────────────────────────────────────────────
 
+/**
+ * Sets the hero background image once the photo has fully loaded.
+ * Uses a hidden Image object to preload the photo before displaying it,
+ * preventing a blank flash. Fades out the skeleton once the image is ready.
+ */
 export function displayBackgroundImage(photoData) {
   const bgImage    = document.getElementById('bgImage');
   const bgSkeleton = document.getElementById('bgSkeleton');
 
   if (!bgImage || !photoData) return;
 
+  // Preload the image in memory before applying it to the background
   const img    = new Image();
   img.onload   = () => {
     bgImage.style.backgroundImage = `url('${photoData.url}')`;
@@ -57,6 +78,10 @@ export function displayBackgroundImage(photoData) {
   img.src = photoData.url;
 }
 
+/**
+ * Shows the background image skeleton (loading placeholder).
+ * Called before a new photo starts loading.
+ */
 export function showImageSkeleton() {
   const bgSkeleton = document.getElementById('bgSkeleton');
   if (bgSkeleton) bgSkeleton.style.opacity = '1';
@@ -64,6 +89,12 @@ export function showImageSkeleton() {
 
 // ── THEME ──────────────────────────────────────────────
 
+/**
+ * Applies the given theme ('light' or 'dark') to the entire page
+ * by setting the data-theme attribute on the <html> element.
+ * CSS variables defined for [data-theme="dark"] take effect automatically.
+ * Also updates the theme toggle button icon.
+ */
 export function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   const icon = document.querySelector('.theme-icon');
@@ -72,6 +103,12 @@ export function applyTheme(theme) {
 
 // ── FAVORITE BUTTON ────────────────────────────────────
 
+/**
+ * Updates the favorite button appearance based on whether the
+ * current quote is already saved.
+ * - If saved: shows a filled heart (♥) and a colored background.
+ * - If not saved: shows an empty heart (♡) and a default background.
+ */
 export function updateFavoriteButton(isSaved) {
   const btn  = document.getElementById('favoriteBtn');
   const icon = btn?.querySelector('.btn-icon');
@@ -90,6 +127,11 @@ export function updateFavoriteButton(isSaved) {
 
 // ── HISTORY NAV ────────────────────────────────────────
 
+/**
+ * Updates the previous/next history navigation buttons and the counter label.
+ * Disables the Prev button when on the first quote,
+ * and the Next button when on the most recent quote.
+ */
 export function updateHistoryNav(currentIndex, total) {
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
@@ -102,12 +144,19 @@ export function updateHistoryNav(currentIndex, total) {
 
 // ── TOAST ──────────────────────────────────────────────
 
+// Timer reference used to clear the previous toast before showing a new one
 let toastTimer = null;
 
+/**
+ * Shows a brief notification message at the bottom of the screen.
+ * The toast disappears automatically after the given duration (default 2.5s).
+ * If a toast is already visible, it resets the timer and updates the message.
+ */
 export function showToast(message, duration = 2500) {
   const toast = document.getElementById('toast');
   if (!toast) return;
 
+  // Cancel any existing timer so the new toast gets its full duration
   if (toastTimer) clearTimeout(toastTimer);
 
   toast.textContent = message;
@@ -120,6 +169,14 @@ export function showToast(message, duration = 2500) {
 
 // ── FAVORITES PAGE ─────────────────────────────────────
 
+/**
+ * Renders the favorites grid with all saved quote cards.
+ * If the list is empty, shows the empty state message instead.
+ * Each card displays: background image, quote text, author, date saved,
+ * and a Remove button.
+ * Cards are shown in reverse order (newest first) with a staggered
+ * CSS entrance animation using animation-delay.
+ */
 export function renderFavoritesGrid(favorites, onRemove) {
   const grid       = document.getElementById('favoritesGrid');
   const emptyState = document.getElementById('emptyState');
@@ -134,9 +191,10 @@ export function renderFavoritesGrid(favorites, onRemove) {
 
   if (emptyState) emptyState.hidden = true;
 
+  // Build each card as an HTML string and inject all at once
   grid.innerHTML = favorites
     .slice()
-    .reverse()
+    .reverse() // Show newest favorites first
     .map((fav, index) => `
       <article
         class="fav-card"
@@ -161,11 +219,16 @@ export function renderFavoritesGrid(favorites, onRemove) {
     `)
     .join('');
 
+  // Attach a click event to every Remove button after rendering
   grid.querySelectorAll('.fav-card-remove').forEach(btn => {
     btn.addEventListener('click', () => onRemove(btn.dataset.id));
   });
 }
 
+/**
+ * Formats an ISO date string into a readable format like "Jan 15, 2026".
+ * Returns an empty string if the date is invalid.
+ */
 function formatDate(iso) {
   try {
     return new Date(iso).toLocaleDateString('en-US', {
